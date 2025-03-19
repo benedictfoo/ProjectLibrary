@@ -45,8 +45,11 @@ body {
   padding: 1rem;
   box-sizing: border-box;
   aspect-ratio: 2/3;
+  display: flex;
+  flex-direction: column;
 }
 .delete-book {
+  margin-top: auto;
   background-color: rgb(212, 82, 108);
   color: whitesmoke;
   padding: 0.5rem 1rem;
