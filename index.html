@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <script defer src="js/script.js"></script>
+  <body>
+    <div class="books-container"></div>
+    <button class="addBook">Add Book</button>
+    <dialog class="addBookModal">
+      <form class="bookForm" action="#">
+        <label for="author"
+          >Author: <input required id="author" type="text" name="author"
+        /></label>
+        <label for="title"
+          >Title: <input id="title" required type="text" name="title"
+        /></label>
+        <label for="totalPages"
+          >Total Pages:
+          <input required id="totalPages" type="number" name="totalPages"
+        /></label>
+        <button class="submitBook" type="submit">Submit</button>
+        <button class="closeAddBookModal" type="button">X</button>
+      </form>
+    </dialog>
+  </body>
+</html>

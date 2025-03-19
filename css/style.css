@@ -1,0 +1,54 @@
+body {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+.addBookModal {
+  position: relative;
+  width: min(90%, 200px);
+  padding: 1.5rem;
+}
+.closeAddBookModal {
+  position: absolute;
+  --position: 1rem;
+  top: var(--position);
+  right: var(--position);
+}
+
+.books-container {
+  margin-block: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16ch, 0.5fr));
+  gap: 4px;
+
+  width: 90%;
+  max-width: 600px;
+  border: 2px dashed darkgoldenrod;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.books-container > p:first-child {
+  grid-column: span 2;
+  text-align: center;
+}
+
+.books-container:has(:nth-child(n + 2)) {
+  border: 6px solid silver;
+}
+
+.book-container {
+  overflow: scroll;
+  border: 2px solid maroon;
+  padding: 1rem;
+  box-sizing: border-box;
+  aspect-ratio: 2/3;
+}
+.delete-book {
+  background-color: rgb(212, 82, 108);
+  color: whitesmoke;
+  padding: 0.5rem 1rem;
+  text-transform: uppercase;
+}
