@@ -76,12 +76,11 @@ function renderBooksContainerContent() {
       toggleRead.append(toggleInput, toggleText);
       toggleInput.addEventListener("change", () => {
         if (toggleInput.checked) {
-          this.read = true;
+          book.read = true;
           toggleText.textContent = "Read";
         } else {
-          this.read = false;
+          book.read = false;
           toggleText.textContent = "Unread";
-          renderBooksContainerContent();
         }
       });
       bookContainer.append(
