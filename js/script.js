@@ -5,9 +5,12 @@ function Book(author, title, totalPages) {
   this.author = author;
   this.title = title;
   this.totalPages = totalPages;
+  this.read = false;
   this.id = crypto.randomUUID();
 }
-
+Book.prototype.toggleRead = function () {
+  this.read = !this.read;
+};
 function addBookToLibrary(author, title, totalPages) {
   // take params, create a book then store it in the array
 
@@ -21,6 +24,7 @@ const addBookButton = document.querySelector(".addBook");
 const addBookModal = document.querySelector(".addBookModal");
 const closeAddBookModal = document.querySelector(".closeAddBookModal");
 const bookForm = document.querySelector(".bookForm");
+
 addBookButton.addEventListener("click", () => addBookModal.showModal());
 closeAddBookModal.addEventListener("click", () => addBookModal.close());
 
@@ -42,8 +46,8 @@ booksContainer.addEventListener("click", (e) => {
   if (target.classList.contains("delete-book")) {
     const parent = e.target.parentElement;
     myLibrary = [...myLibrary.filter((book) => book.id !== parent.dataset.id)];
+    renderBooksContainerContent();
   }
-  renderBooksContainerContent();
 });
 function renderBooksContainerContent() {
   if (!myLibrary.length) {
@@ -61,11 +65,31 @@ function renderBooksContainerContent() {
       const deleteBookButton = document.createElement("button");
       deleteBookButton.classList.add("delete-book");
       deleteBookButton.textContent = "Remove";
+      const toggleRead = document.createElement("label");
+      toggleRead.dataset.readState = "false";
+      toggleRead.classList.add("toggle-read");
+      const toggleInput = document.createElement("input");
+      toggleInput.setAttribute("type", "checkbox");
+
+      const toggleText = document.createElement("span");
+      toggleText.textContent = book.read ? "Read" : "Unread";
+      toggleRead.append(toggleInput, toggleText);
+      toggleInput.addEventListener("change", () => {
+        if (toggleInput.checked) {
+          this.read = true;
+          toggleText.textContent = "Read";
+        } else {
+          this.read = false;
+          toggleText.textContent = "Unread";
+          renderBooksContainerContent();
+        }
+      });
       bookContainer.append(
         authorParagraph,
         titleParagraph,
         totalPagesParagraph,
-        deleteBookButton
+        deleteBookButton,
+        toggleRead
       );
       bookContainer.classList.add("book-container");
       bookContainer.dataset.id = book.id;

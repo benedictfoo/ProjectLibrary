@@ -47,11 +47,34 @@ body {
   aspect-ratio: 2/3;
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 .delete-book {
   margin-top: auto;
   background-color: rgb(212, 82, 108);
   color: whitesmoke;
+}
+
+.toggle-read {
+  display: flex;
+  position: relative;
+  background-color: aquamarine;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.toggle-read input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  z-index: 1;
+}
+.toggle-read:hover {
+  background-color: burlywood;
+}
+.delete-book,
+.toggle-read {
   padding: 0.5rem 1rem;
-  text-transform: uppercase;
+  text-transform: capitalize;
+  border: 1px solid black;
 }
