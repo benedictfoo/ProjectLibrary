@@ -112,7 +112,7 @@ LibraryApp.prototype.setModalEvents = function () {
 LibraryApp.prototype.addBookToLibrary = function (author, title, totalPages) {
   const newBook = new Book(author, title, totalPages);
   newBook.createBookElements();
-  //   newBook.addToggleReadEvent();
+
   this.myLibrary.push(newBook);
   this.renderBooks("add");
 };
@@ -168,53 +168,5 @@ LibraryApp.prototype.setFormEvent = function () {
   });
 };
 
-// LibraryApp.prototype.renderBooksContainerContent = function () {
-//   if (!this.myLibrary.length) {
-//     this.booksContainer.innerHTML = `<p>No books added yet</p>`;
-//   } else {
-//     this.booksContainer.innerHTML = "";
-//     for (let book of myLibrary) {
-//       const bookContainer = document.createElement("div");
-//       const authorParagraph = document.createElement("p");
-//       const titleParagraph = document.createElement("p");
-//       const totalPagesParagraph = document.createElement("p");
-//       const deleteBookButton = document.createElement("button");
-//       const toggleRead = document.createElement("label");
-//       const toggleInput = document.createElement("input");
-//       toggleInput.setAttribute("type", "checkbox");
-//       const toggleText = document.createElement("span");
-//       authorParagraph.textContent = book.author;
-//       titleParagraph.textContent = book.title;
-//       totalPagesParagraph.textContent = book.totalPages;
-//       deleteBookButton.classList.add("delete-book");
-//       deleteBookButton.textContent = "Remove";
-//       toggleRead.dataset.readState = "false";
-//       toggleRead.classList.add("toggle-read");
-
-//       toggleText.textContent = book.read ? "Read" : "Unread";
-//       toggleRead.append(toggleInput, toggleText);
-//       toggleInput.addEventListener("change", () => {
-//         if (toggleInput.checked) {
-//           book.read = true;
-//           toggleText.textContent = "Read";
-//         } else {
-//           book.read = false;
-//           toggleText.textContent = "Unread";
-//         }
-//       });
-//       bookContainer.append(
-//         authorParagraph,
-//         titleParagraph,
-//         totalPagesParagraph,
-//         deleteBookButton,
-//         toggleRead
-//       );
-//       bookContainer.classList.add("book-container");
-//       bookContainer.dataset.id = book.id;
-//       booksContainer.appendChild(bookContainer);
-//     }
-//   }
-// };
 const libraryApp = new LibraryApp();
 libraryApp.initializeApp();
-libraryApp.addBookToLibrary("Ben", "hey jojo", 999);
