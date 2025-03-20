@@ -1,7 +1,4 @@
-let myLibrary = [];
-
 function Book(author, title, totalPages) {
-  // the constructor...
   this.author = author;
   this.title = title;
   this.totalPages = totalPages;
@@ -11,88 +8,213 @@ function Book(author, title, totalPages) {
 Book.prototype.toggleRead = function () {
   this.read = !this.read;
 };
-function addBookToLibrary(author, title, totalPages) {
-  // take params, create a book then store it in the array
-
-  const newBook = new Book(author, title, totalPages);
-  myLibrary.push(newBook);
-}
-
-console.log(myLibrary);
-const booksContainer = document.querySelector(".books-container");
-const addBookButton = document.querySelector(".addBook");
-const addBookModal = document.querySelector(".addBookModal");
-const closeAddBookModal = document.querySelector(".closeAddBookModal");
-const bookForm = document.querySelector(".bookForm");
-
-addBookButton.addEventListener("click", () => addBookModal.showModal());
-closeAddBookModal.addEventListener("click", () => addBookModal.close());
-
-renderBooksContainerContent();
-bookForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const authorInput = document.querySelector("#author");
-  const titleInput = document.querySelector("#title");
-  const totalPagesInput = document.querySelector("#totalPages");
-  addBookToLibrary(authorInput.value, titleInput.value, totalPagesInput.value);
-  authorInput.value = "";
-  titleInput.value = "";
-  totalPagesInput.value = "";
-  renderBooksContainerContent();
-  addBookModal.close();
-});
-booksContainer.addEventListener("click", (e) => {
-  const target = e.target;
-  if (target.classList.contains("delete-book")) {
-    const parent = e.target.parentElement;
-    myLibrary = [...myLibrary.filter((book) => book.id !== parent.dataset.id)];
-    renderBooksContainerContent();
-  }
-});
-function renderBooksContainerContent() {
-  if (!myLibrary.length) {
-    booksContainer.innerHTML = `<p>No books added yet</p>`;
-  } else {
-    booksContainer.innerHTML = "";
-    for (let book of myLibrary) {
-      const bookContainer = document.createElement("div");
-      const authorParagraph = document.createElement("p");
-      authorParagraph.textContent = book.author;
-      const titleParagraph = document.createElement("p");
-      titleParagraph.textContent = book.title;
-      const totalPagesParagraph = document.createElement("p");
-      totalPagesParagraph.textContent = book.totalPages;
-      const deleteBookButton = document.createElement("button");
-      deleteBookButton.classList.add("delete-book");
-      deleteBookButton.textContent = "Remove";
-      const toggleRead = document.createElement("label");
-      toggleRead.dataset.readState = "false";
-      toggleRead.classList.add("toggle-read");
-      const toggleInput = document.createElement("input");
-      toggleInput.setAttribute("type", "checkbox");
-
-      const toggleText = document.createElement("span");
-      toggleText.textContent = book.read ? "Read" : "Unread";
-      toggleRead.append(toggleInput, toggleText);
-      toggleInput.addEventListener("change", () => {
-        if (toggleInput.checked) {
-          book.read = true;
-          toggleText.textContent = "Read";
-        } else {
-          book.read = false;
-          toggleText.textContent = "Unread";
-        }
-      });
-      bookContainer.append(
-        authorParagraph,
-        titleParagraph,
-        totalPagesParagraph,
-        deleteBookButton,
-        toggleRead
-      );
-      bookContainer.classList.add("book-container");
-      bookContainer.dataset.id = book.id;
-      booksContainer.appendChild(bookContainer);
+Book.prototype.createBookElements = function () {
+  const elements = {
+    bookContainer: {
+      className: "book-container",
+      tag: "div",
+      dataset: { id: this.id },
+    },
+    authorParagraph: {
+      tag: "p",
+      appendTo: "bookContainer",
+      textContent: this.author,
+    },
+    titleParagraph: {
+      tag: "p",
+      appendTo: "bookContainer",
+      textContent: this.title,
+    },
+    totalPagesParagraph: {
+      tag: "p",
+      appendTo: "bookContainer",
+      textContent: this.totalPages,
+    },
+    deleteBookButton: {
+      tag: "button",
+      className: "delete-book",
+      textContent: "Remove",
+      appendTo: "bookContainer",
+    },
+    toggleRead: {
+      tag: "label",
+      className: "toggle-read",
+      dataset: { readState: "false" },
+      appendTo: "bookContainer",
+    },
+    toggleInput: {
+      tag: "input",
+      className: "toggle-read-input",
+      setAttribute: { type: "checkbox" },
+      appendTo: "toggleRead",
+    },
+    toggleText: {
+      tag: "span",
+      textContent: this.read ? "Read" : "Unread",
+      appendTo: "toggleRead",
+    },
+  };
+  Object.entries(elements).forEach(
+    ([
+      elementName,
+      { tag, className, dataset, appendTo, textContent, setAttribute },
+    ]) => {
+      this[elementName] = document.createElement(tag);
+      this[elementName].classList.add(className);
+      if (dataset) {
+        Object.entries(dataset).forEach(([key, value]) => {
+          this[elementName].dataset[key] = value;
+        });
+      }
+      if (setAttribute) {
+        Object.entries(setAttribute).forEach(([key, value]) => {
+          this[elementName].setAttribute(key, value);
+        });
+      }
+      if (appendTo) {
+        this[appendTo].appendChild(this[elementName]);
+      }
+      if (textContent) {
+        this[elementName].textContent = textContent;
+      }
     }
-  }
+  );
+};
+
+function LibraryApp() {
+  this.myLibrary = [];
 }
+LibraryApp.prototype.initializeApp = function () {
+  this.selectElements();
+  this.setModalEvents();
+  this.setFormEvent();
+  this.addToggleReadEvent();
+  this.addDeleteBookEvent();
+};
+LibraryApp.prototype.selectElements = function () {
+  this.booksContainer = document.querySelector(".books-container");
+  this.addBookButton = document.querySelector(".addBook");
+  this.addBookModal = document.querySelector(".addBookModal");
+  this.closeAddBookModal = document.querySelector(".closeAddBookModal");
+  this.bookForm = document.querySelector(".bookForm");
+  this.authorInput = document.querySelector("#author");
+  this.titleInput = document.querySelector("#title");
+  this.totalPagesInput = document.querySelector("#totalPages");
+};
+LibraryApp.prototype.setModalEvents = function () {
+  this.addBookButton.addEventListener("click", () =>
+    this.addBookModal.showModal()
+  );
+  this.closeAddBookModal.addEventListener("click", () =>
+    this.addBookModal.close()
+  );
+};
+LibraryApp.prototype.addBookToLibrary = function (author, title, totalPages) {
+  const newBook = new Book(author, title, totalPages);
+  newBook.createBookElements();
+  //   newBook.addToggleReadEvent();
+  this.myLibrary.push(newBook);
+  this.renderBooks("add");
+};
+LibraryApp.prototype.addToggleReadEvent = function () {
+  this.booksContainer.addEventListener("change", (e) => {
+    if (e.target.classList.contains("toggle-read-input")) {
+      const bookElementId = e.target.closest(".book-container").dataset.id;
+      const foundBook = this.myLibrary.find(
+        (book) => book.id === bookElementId
+      );
+      if (foundBook) {
+        foundBook.read = !foundBook.read;
+        foundBook.toggleText.textContent = foundBook.read ? "Read" : "Unread";
+      }
+    }
+  });
+};
+LibraryApp.prototype.addDeleteBookEvent = function () {
+  this.booksContainer.addEventListener("click", (e) => {
+    const target = e.target;
+    if (target.classList.contains("delete-book")) {
+      const parent = e.target.parentElement;
+      this.myLibrary = [
+        ...this.myLibrary.filter((book) => book.id !== parent.dataset.id),
+      ];
+      this.renderBooks();
+    }
+  });
+};
+LibraryApp.prototype.renderBooks = function (type) {
+  const library = this.myLibrary;
+  if (type === "add") {
+    this.booksContainer.appendChild(library[library.length - 1].bookContainer);
+  } else {
+    this.booksContainer.innerHTML = "";
+    library.forEach((book) => {
+      this.booksContainer.appendChild(book.bookContainer);
+    });
+  }
+};
+LibraryApp.prototype.setFormEvent = function () {
+  this.bookForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    this.addBookToLibrary(
+      this.authorInput.value,
+      this.titleInput.value,
+      this.totalPagesInput.value
+    );
+    this.authorInput.value = "";
+    this.titleInput.value = "";
+    this.totalPagesInput.value = "";
+    this.addBookModal.close();
+  });
+};
+
+// LibraryApp.prototype.renderBooksContainerContent = function () {
+//   if (!this.myLibrary.length) {
+//     this.booksContainer.innerHTML = `<p>No books added yet</p>`;
+//   } else {
+//     this.booksContainer.innerHTML = "";
+//     for (let book of myLibrary) {
+//       const bookContainer = document.createElement("div");
+//       const authorParagraph = document.createElement("p");
+//       const titleParagraph = document.createElement("p");
+//       const totalPagesParagraph = document.createElement("p");
+//       const deleteBookButton = document.createElement("button");
+//       const toggleRead = document.createElement("label");
+//       const toggleInput = document.createElement("input");
+//       toggleInput.setAttribute("type", "checkbox");
+//       const toggleText = document.createElement("span");
+//       authorParagraph.textContent = book.author;
+//       titleParagraph.textContent = book.title;
+//       totalPagesParagraph.textContent = book.totalPages;
+//       deleteBookButton.classList.add("delete-book");
+//       deleteBookButton.textContent = "Remove";
+//       toggleRead.dataset.readState = "false";
+//       toggleRead.classList.add("toggle-read");
+
+//       toggleText.textContent = book.read ? "Read" : "Unread";
+//       toggleRead.append(toggleInput, toggleText);
+//       toggleInput.addEventListener("change", () => {
+//         if (toggleInput.checked) {
+//           book.read = true;
+//           toggleText.textContent = "Read";
+//         } else {
+//           book.read = false;
+//           toggleText.textContent = "Unread";
+//         }
+//       });
+//       bookContainer.append(
+//         authorParagraph,
+//         titleParagraph,
+//         totalPagesParagraph,
+//         deleteBookButton,
+//         toggleRead
+//       );
+//       bookContainer.classList.add("book-container");
+//       bookContainer.dataset.id = book.id;
+//       booksContainer.appendChild(bookContainer);
+//     }
+//   }
+// };
+const libraryApp = new LibraryApp();
+libraryApp.initializeApp();
+libraryApp.addBookToLibrary("Ben", "hey jojo", 999);
